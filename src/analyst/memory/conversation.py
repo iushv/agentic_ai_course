@@ -1,0 +1,193 @@
+"""Conversation Memory — maintains state across agent turns.
+
+Three types of memory for a data analyst agent:
+
+1. **Chat history** — Previous questions and answers in the current session
+2. **Schema cache** — Learned dataset schemas (avoid re-inspecting)
+3. **Context window management** — Summarize old messages when approaching token limits
+
+This module implements all three, with token-aware management.
+"""
+
+from __future__ import annotations
+
+import json
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+
+
+@dataclass
+class Message:
+    """A single message in the conversation history."""
+    role: str  # "user" or "assistant"
+    content: str
+    timestamp: float = field(default_factory=time.time)
+    token_estimate: int = 0  # Rough estimate: ~4 chars per token
+
+    def __post_init__(self):
+        if self.token_estimate == 0:
+            self.token_estimate = len(self.content) // 4
+
+
+@dataclass
+class SchemaEntry:
+    """Cached schema for a dataset."""
+    table_name: str
+    columns: list[dict]  # [{name, dtype, sample_values, null_count}]
+    row_count: int
+    cached_at: float = field(default_factory=time.time)
+    description: str = ""
+
+
+class ConversationMemory:
+    """Manages conversation state across multiple agent turns.
+
+    Features:
+    - Rolling chat history with token-aware truncation
+    - Schema cache (inspect once, remember forever in session)
+    - Session persistence (save/load to disk)
+    - Context window management (summarize old messages)
+    """
+
+    def __init__(
+        self,
+        max_history_tokens: int = 4000,
+        max_messages: int = 20,
+    ):
+        self.max_history_tokens = max_history_tokens
+        self.max_messages = max_messages
+        self.messages: list[Message] = []
+        self.schema_cache: dict[str, SchemaEntry] = {}
+        self.session_metadata: dict = {
+            "created_at": time.time(),
+            "turn_count": 0,
+        }
+
+    def add_user_message(self, content: str) -> None:
+        """Record a user message."""
+        self.messages.append(Message(role="user", content=content))
+        self.session_metadata["turn_count"] += 1
+        self._enforce_limits()
+
+    def add_assistant_message(self, content: str) -> None:
+        """Record an assistant response."""
+        self.messages.append(Message(role="assistant", content=content))
+        self._enforce_limits()
+
+    def get_history_text(self) -> str:
+        """Get conversation history formatted for injection into system prompt."""
+        if not self.messages:
+            return ""
+
+        lines = ["Previous conversation:"]
+        for msg in self.messages:
+            role = "User" if msg.role == "user" else "Assistant"
+            # Truncate very long messages in history
+            content = msg.content[:500]
+            if len(msg.content) > 500:
+                content += "...(truncated)"
+            lines.append(f"\n{role}: {content}")
+
+        return "\n".join(lines)
+
+    def get_history_token_count(self) -> int:
+        """Estimate total tokens in history."""
+        return sum(m.token_estimate for m in self.messages)
+
+    # --- Schema Cache ---
+
+    def cache_schema(self, table_name: str, schema: SchemaEntry) -> None:
+        """Cache a learned schema so the agent doesn't re-inspect."""
+        self.schema_cache[table_name] = schema
+
+    def get_cached_schema(self, table_name: str) -> SchemaEntry | None:
+        """Retrieve cached schema, or None if not cached."""
+        return self.schema_cache.get(table_name)
+
+    def get_all_schemas_text(self) -> str:
+        """Format all cached schemas for the system prompt."""
+        if not self.schema_cache:
+            return ""
+
+        lines = ["Cached dataset schemas (already inspected):"]
+        for name, schema in self.schema_cache.items():
+            cols = ", ".join(
+                f"{c['name']} ({c['dtype']})" for c in schema.columns
+            )
+            lines.append(f"  '{name}': {schema.row_count} rows | {cols}")
+
+        return "\n".join(lines)
+
+    def has_schema(self, table_name: str) -> bool:
+        return table_name in self.schema_cache
+
+    # --- Context Window Management ---
+
+    def _enforce_limits(self) -> None:
+        """Trim history to stay within token and message limits."""
+        # Remove oldest messages if over message limit
+        while len(self.messages) > self.max_messages:
+            self.messages.pop(0)
+
+        # Remove oldest messages if over token limit
+        while (
+            self.get_history_token_count() > self.max_history_tokens
+            and len(self.messages) > 2  # Keep at least last exchange
+        ):
+            self.messages.pop(0)
+
+    def summarize_and_compact(self, summary: str) -> None:
+        """Replace old history with a summary to free context space.
+
+        Call this when the context is getting full. Pass a summary
+        (generated by an LLM) of the conversation so far.
+        """
+        # Keep only the last 2 messages + the summary
+        recent = self.messages[-2:] if len(self.messages) >= 2 else self.messages[:]
+        self.messages = [
+            Message(role="assistant", content=f"[Summary of prior conversation: {summary}]"),
+            *recent,
+        ]
+
+    # --- Persistence ---
+
+    def save(self, path: str | Path) -> None:
+        """Save session to disk."""
+        data = {
+            "messages": [
+                {"role": m.role, "content": m.content, "timestamp": m.timestamp}
+                for m in self.messages
+            ],
+            "schema_cache": {
+                name: {
+                    "table_name": s.table_name,
+                    "columns": s.columns,
+                    "row_count": s.row_count,
+                    "cached_at": s.cached_at,
+                    "description": s.description,
+                }
+                for name, s in self.schema_cache.items()
+            },
+            "metadata": self.session_metadata,
+        }
+        Path(path).write_text(json.dumps(data, indent=2))
+
+    def load(self, path: str | Path) -> None:
+        """Load session from disk."""
+        data = json.loads(Path(path).read_text())
+        self.messages = [
+            Message(role=m["role"], content=m["content"], timestamp=m["timestamp"])
+            for m in data["messages"]
+        ]
+        self.schema_cache = {
+            name: SchemaEntry(**s)
+            for name, s in data["schema_cache"].items()
+        }
+        self.session_metadata = data.get("metadata", self.session_metadata)
+
+    def reset(self) -> None:
+        """Clear all memory."""
+        self.messages.clear()
+        self.schema_cache.clear()
+        self.session_metadata["turn_count"] = 0

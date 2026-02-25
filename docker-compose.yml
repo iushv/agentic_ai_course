@@ -1,0 +1,31 @@
+services:
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile.sandbox
+    image: analyst-sandbox
+    command: ["python", "-c", "print('sandbox ready')"]
+    network_mode: "none"
+    mem_limit: 512m
+    cpus: 0.50
+    read_only: true
+    tmpfs:
+      - /tmp:size=100m
+
+  api:
+    image: python:3.11-slim
+    profiles: ["api"]
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONPATH=/app/src
+    command:
+      - /bin/sh
+      - -lc
+      - >
+        pip install --no-cache-dir uv &&
+        uv sync --extra api &&
+        uv run uvicorn analyst.api:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"

@@ -1,0 +1,17 @@
+[
+  {
+    "question": "Which region has the highest total revenue in sample_sales?",
+    "answer": "North has the highest total revenue after grouping by region and summing revenue.",
+    "code_used": "df.groupby('region')['revenue'].sum().sort_values(ascending=False)"
+  },
+  {
+    "question": "What is the average salary by department in sample_employees?",
+    "answer": "Engineering has the highest average salary among departments.",
+    "code_used": "df.groupby('department')['salary'].mean().round(2)"
+  },
+  {
+    "question": "How are active users trending over time in sample_timeseries?",
+    "answer": "Active users increase steadily month over month across regions.",
+    "code_used": "df.groupby('date')['value'].sum().sort_index()"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "question": "What is the total revenue in sample_sales?",
+    "expected_answer": "revenue",
+    "expected_keywords": ["total", "revenue"],
+    "difficulty": "easy",
+    "category": "aggregation",
+    "max_tool_calls": 6
+  },
+  {
+    "question": "Which region has the highest quantity sold?",
+    "expected_answer": "region",
+    "expected_keywords": ["highest", "quantity"],
+    "difficulty": "medium",
+    "category": "comparison",
+    "max_tool_calls": 8
+  },
+  {
+    "question": "How does active_users trend over time in sample_timeseries?",
+    "expected_answer": "trend",
+    "expected_keywords": ["active_users", "time"],
+    "difficulty": "medium",
+    "category": "trend",
+    "max_tool_calls": 8
+  }
+]

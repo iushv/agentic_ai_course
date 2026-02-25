@@ -1,0 +1,21 @@
+employee_id,name,department,role,hire_date,salary,performance_score,years_experience
+E001,Alice Chen,Engineering,Senior Engineer,2019-03-15,145000,4.5,8
+E002,Bob Martinez,Engineering,Staff Engineer,2017-06-01,175000,4.8,12
+E003,Carol Davis,Marketing,Marketing Manager,2020-01-10,110000,4.2,6
+E004,David Kim,Engineering,Junior Engineer,2023-07-20,85000,3.8,2
+E005,Eva Petrov,Sales,Sales Lead,2018-11-05,120000,4.6,9
+E006,Frank Okafor,Engineering,Senior Engineer,2019-09-12,148000,4.3,7
+E007,Grace Liu,Marketing,Content Specialist,2022-04-18,78000,3.9,3
+E008,Hiro Tanaka,Sales,Account Executive,2021-02-28,95000,4.1,5
+E009,Iris Washington,Engineering,Engineering Manager,2016-08-14,185000,4.7,14
+E010,Jack Brown,HR,HR Specialist,2020-10-01,72000,3.6,4
+E011,Karen White,Engineering,Senior Engineer,2018-05-22,152000,4.4,10
+E012,Leo Garcia,Sales,Sales Manager,2017-01-30,135000,4.5,11
+E013,Maya Patel,Engineering,Junior Engineer,2024-01-08,82000,3.5,1
+E014,Noah Johnson,Marketing,VP Marketing,2015-12-10,195000,4.9,16
+E015,Olivia Smith,Engineering,Staff Engineer,2016-11-20,172000,4.6,13
+E016,Paul Williams,Sales,Account Executive,2022-08-15,92000,3.7,3
+E017,Quinn Adams,HR,HR Manager,2019-04-25,115000,4.0,7
+E018,Rachel Lee,Engineering,Senior Engineer,2020-06-30,140000,4.1,6
+E019,Sam Taylor,Marketing,Marketing Analyst,2023-03-12,75000,3.8,2
+E020,Tina Robinson,Engineering,Principal Engineer,2014-07-01,210000,4.9,18
