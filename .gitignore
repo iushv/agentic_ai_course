@@ -10,3 +10,4 @@ build/
 data/outputs/
 .pytest_cache/
 .DS_Store
+*.executed.executed.ipynb

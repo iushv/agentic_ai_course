@@ -1,35 +1,31 @@
 # SOTA Agentic AI Learn-Along
 
-This site hosts a free, open-source day-by-day learning path for building production-grade data analyst agents.
+This is the public learner hub for running the notebooks, following the 14-day plan, and sharing progress.
 
-## Start Here
+## Start in 3 Steps
 
-- 14-day LinkedIn series copy:
+1. Follow the execution path:
+   - `LEARNING_PATH_14_DAYS.md`
+2. Track daily work:
+   - `LEARNING_DAILY_TEMPLATE.md`
+3. Run notebooks in Colab with setup code:
+   - `docs/linkedin/COLAB_NOTEBOOK_EXECUTION_GUIDE.md`
+
+## Publish Track (Optional)
+
+- 14-day LinkedIn post series:
   - `docs/linkedin/LINKEDIN_SOTA_AGENTIC_AI_14_DAY_SERIES.md`
-- Open-source and free resource bank:
-  - `docs/linkedin/OPEN_SOURCE_RESOURCE_BANK.md`
-- Google Sheets tracker template (CSV import):
+- Google Sheets tracker:
   - `docs/linkedin/LINKEDIN_14_DAY_TRACKER.csv`
-- Colab run-code guide for `.ipynb` execution:
-  - `docs/linkedin/COLAB_NOTEBOOK_EXECUTION_GUIDE.md`
+- Open-source/free learning resources:
+  - `docs/linkedin/OPEN_SOURCE_RESOURCE_BANK.md`
+- Hosting guide:
+  - `docs/linkedin/PUBLISH_AND_HOST.md`
 
-## How to Use This
-
-1. Publish one post per day from the 14-day series file.
-2. Import the tracker CSV into Google Sheets to manage progress.
-3. Link each published post URL back into the tracker.
-4. Share weekly recaps with artifacts (traces, evals, charts, API logs).
-
-## Google Colab Link Pattern
-
-After hosting this repo on GitHub, notebooks can be opened in Colab using:
+## Colab Notebook URL Pattern
 
 `https://colab.research.google.com/github/<github-user>/<repo>/blob/main/notebooks/<notebook-name>.ipynb`
 
 Example:
 
 `https://colab.research.google.com/github/<github-user>/<repo>/blob/main/notebooks/01_foundations.ipynb`
-
-For copy-paste setup and execution code, use:
-
-`docs/linkedin/COLAB_NOTEBOOK_EXECUTION_GUIDE.md`

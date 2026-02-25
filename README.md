@@ -1,101 +1,80 @@
-# Data Analyst Agent (Agentic AI Learning Project)
+# Data Analyst Agent (SOTA Learn-Along)
 
-Production-style learning project for building a provider-agnostic data analyst
-agent with PydanticAI, sandboxed code execution, evaluations, and tracing.
+Build a production-style data analyst agent with typed outputs, tool calling, sandboxed code execution, evaluation, and observability.
 
-## What It Does
+## Start Here
 
-- Accepts dataset-driven natural language questions
-- Uses tool calling (schema inspection, SQL, Python execution, chart generation)
-- Returns structured answers via `AnalysisResult`
-- Supports model fallback across OpenAI, Anthropic, and Ollama
-- Tracks traces/cost signals with a local tracer
+1. Install and bootstrap:
+   ```bash
+   uv sync --extra api --extra eval
+   cp .env.example .env
+   ```
+2. Set local model config in `.env` (recommended):
+   - `LMSTUDIO_BASE_URL=http://127.0.0.1:1234`
+   - `LMSTUDIO_MODEL=local-model`
+3. Run quality gate:
+   ```bash
+   ./scripts/preflight_checks.sh
+   ```
+4. Start learning sequence:
+   - `LEARNING_PATH_14_DAYS.md`
+   - `LEARNING_DAILY_TEMPLATE.md`
 
-## Quickstart
+## Learning Flow
 
-```bash
-uv sync --extra api --extra eval
-cp .env.example .env
-```
+- **Phase 1: Core agent patterns**
+  - `notebooks/01_foundations.ipynb`
+  - `notebooks/02_tool_calling.ipynb`
+  - `notebooks/03_code_gen_exec.ipynb`
+- **Phase 2: Production controls**
+  - `notebooks/04_react_loop.ipynb`
+  - `notebooks/05_memory_context.ipynb`
+  - `notebooks/06_evaluation.ipynb`
+  - `notebooks/07_observability.ipynb`
+- **Phase 3: Integration and publish**
+  - `notebooks/08_full_agent.ipynb`
+  - `notebooks/09_sota_masterclass.ipynb`
+  - public docs in `docs/`
 
-Set provider config in `.env`:
+## Run Paths
 
-- Local LM Studio (recommended for this learning track):
-  - `LMSTUDIO_BASE_URL=http://127.0.0.1:1234`
-  - `LMSTUDIO_MODEL=local-model` (replace with your loaded model ID)
-  - Optional override: `ANALYST_PRIMARY_MODEL=openai:local-model`
-- OpenAI/Anthropic keys are optional unless you explicitly use those providers.
+- **Notebook-first path**: follow `LEARNING_PATH_14_DAYS.md`
+- **API-first path**:
+  ```bash
+  uv run uvicorn analyst.api:app --host 0.0.0.0 --port 8000 --reload
+  ```
+- **API smoke request**:
+  ```bash
+  curl -X POST http://127.0.0.1:8000/analyze \
+    -H "content-type: application/json" \
+    -H "Idempotency-Key: demo-1" \
+    -d '{
+      "question": "Which region has the highest total revenue in sample_sales?",
+      "data_dir": "data",
+      "models": ["openai:local-model"],
+      "session_id": "demo-session"
+    }'
+  ```
 
-Run tests:
+## Safety and Runtime Controls
 
-```bash
-uv run python -m pytest tests/
-```
+- Default execution backend is Docker (`ANALYST_EXECUTION_BACKEND=docker`).
+- Local fallback mode is available for learning only:
+  - `ANALYST_ALLOW_UNSAFE_SUBPROCESS=1`
+- Guardrails are on by default; disable only for controlled experiments:
+  - `ANALYST_DISABLE_GUARDRAILS=1`
 
-Run API:
+## Where to Read Next
 
-```bash
-uv run uvicorn analyst.api:app --host 0.0.0.0 --port 8000 --reload
-```
+- Industry pattern mapping: `INDUSTRY_AGENT_DETAILS.md`
+- Public learn-along hub: `docs/index.md`
+- LinkedIn series + tracker + Colab guide: `docs/linkedin/`
 
-Execution backend defaults to Docker sandbox:
+## Project Structure
 
-```bash
-export ANALYST_EXECUTION_BACKEND=docker
-```
-
-For local debugging only (unsafe):
-
-```bash
-export ANALYST_ALLOW_UNSAFE_SUBPROCESS=1
-```
-
-Guardrails are enabled by default. To disable for controlled experiments:
-
-```bash
-export ANALYST_DISABLE_GUARDRAILS=1
-```
-
-API reliability controls:
-
-```bash
-export ANALYST_RATE_LIMIT_MAX_REQUESTS=30
-export ANALYST_RATE_LIMIT_WINDOW_SECONDS=60
-export ANALYST_IDEMPOTENCY_TTL_SECONDS=600
-```
-
-## API Example
-
-```bash
-curl -X POST http://127.0.0.1:8000/analyze \
-  -H "content-type: application/json" \
-  -H "Idempotency-Key: demo-1" \
-  -d '{
-    "question": "Which region has the highest total revenue in sample_sales?",
-    "data_dir": "data",
-    "models": ["openai:local-model"],
-    "session_id": "demo-session"
-  }'
-```
-
-## Project Layout
-
-- `src/analyst/agent.py`: main orchestration + fallback + memory wiring
-- `src/analyst/tools/`: data loader, schema inspector, code executor, visualizer
-- `src/analyst/safety/`: input and code guardrails
-- `src/analyst/reliability/`: retry/backoff and circuit breaker policies
-- `src/analyst/prompting/`: dynamic few-shot example retrieval
-- `src/analyst/sandbox/`: Docker and E2B execution backends
+- `src/analyst/agent.py`: orchestration, fallback, memory, tracing hooks
+- `src/analyst/tools/`: loader, schema inspector, SQL/code/chart tools
+- `src/analyst/sandbox/`: Docker and E2B execution adapters
 - `src/analyst/evaluation/`: eval harness and metrics
-- `src/analyst/observability/`: tracing and dashboard stats
-- `tests/`: local deterministic test coverage
-
-## Lessons
-
-- `notebooks/01_foundations.ipynb` through `notebooks/07_observability.ipynb`
-- continue assembling full production pipeline in `notebooks/08_full_agent.ipynb`
-
-## Industry Patterns
-
-- Source-backed blueprint of cutting-edge lab practices:
-  `INDUSTRY_AGENT_DETAILS.md`
+- `src/analyst/observability/`: tracing and dashboard summaries
+- `tests/`: deterministic project checks
