@@ -42,9 +42,12 @@ Use this template:
 
 `https://colab.research.google.com/github/<github-user>/<repo>/blob/main/notebooks/<notebook-name>.ipynb`
 
+Also share the ready-to-run setup/code guide:
+
+- `docs/linkedin/COLAB_NOTEBOOK_EXECUTION_GUIDE.md`
+
 ## 5) Suggested publishing cadence
 
 - Post one day topic per day for 14 days.
 - Add the live LinkedIn URL in the `Post_URL` column.
 - Publish one weekend recap with artifacts and lessons.
-

@@ -10,6 +10,8 @@ This site hosts a free, open-source day-by-day learning path for building produc
   - `docs/linkedin/OPEN_SOURCE_RESOURCE_BANK.md`
 - Google Sheets tracker template (CSV import):
   - `docs/linkedin/LINKEDIN_14_DAY_TRACKER.csv`
+- Colab run-code guide for `.ipynb` execution:
+  - `docs/linkedin/COLAB_NOTEBOOK_EXECUTION_GUIDE.md`
 
 ## How to Use This
 
@@ -28,3 +30,6 @@ Example:
 
 `https://colab.research.google.com/github/<github-user>/<repo>/blob/main/notebooks/01_foundations.ipynb`
 
+For copy-paste setup and execution code, use:
+
+`docs/linkedin/COLAB_NOTEBOOK_EXECUTION_GUIDE.md`
