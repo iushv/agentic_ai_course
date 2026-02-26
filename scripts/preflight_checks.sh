@@ -14,9 +14,13 @@ uv run python - <<'PY'
 import json
 from pathlib import Path
 
-nb_paths = sorted(Path("notebooks").glob("*.ipynb"))
+nb_paths = [
+    p
+    for p in sorted(Path("notebooks").glob("[0-9][0-9]_*.ipynb"))
+    if not p.name.endswith(".executed.ipynb")
+]
 if not nb_paths:
-    raise SystemExit("No notebooks found")
+    raise SystemExit("No canonical lesson notebooks found")
 
 for p in nb_paths:
     json.loads(p.read_text())
@@ -24,12 +28,14 @@ print(f"Validated {len(nb_paths)} notebook files.")
 PY
 
 echo "[4/5] Execute masterclass notebook..."
+mkdir -p .artifacts/notebooks
 uv run jupyter nbconvert \
   --to notebook \
   --execute notebooks/09_sota_masterclass.ipynb \
   --output 09_sota_masterclass.executed.ipynb \
-  --output-dir notebooks \
+  --output-dir .artifacts/notebooks \
   --ExecutePreprocessor.timeout=240
+echo "Masterclass execution artifact: .artifacts/notebooks/09_sota_masterclass.executed.ipynb"
 
 echo "[5/5] Import smoke check..."
 uv run python - <<'PY'

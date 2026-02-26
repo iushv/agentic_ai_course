@@ -13,6 +13,7 @@ uv run python -m pytest tests/ -q
 
 - Capture your daily deliverable using:
   - `LEARNING_DAILY_TEMPLATE.md`
+  - each `Output` bullet below is expected from you as learner evidence.
 
 ## Day-by-Day Plan
 
@@ -170,7 +171,7 @@ Checklist:
 ### Day 13 (Fri, Mar 6)
 
 - Run `notebooks/09_sota_masterclass.ipynb` end-to-end.
-- Compare with `notebooks/09_sota_masterclass.executed.ipynb`.
+- Compare with `.artifacts/notebooks/09_sota_masterclass.executed.ipynb` after preflight run.
 - Output:
   - 10 key takeaways.
 

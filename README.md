@@ -17,6 +17,7 @@ Build a production-style data analyst agent with typed outputs, tool calling, sa
    ./scripts/preflight_checks.sh
    ```
 4. Start learning sequence:
+   - `NAVIGATION_GUIDE.md`
    - `LEARNING_PATH_14_DAYS.md`
    - `LEARNING_DAILY_TEMPLATE.md`
 
@@ -66,6 +67,7 @@ Build a production-style data analyst agent with typed outputs, tool calling, sa
 
 ## Where to Read Next
 
+- Single navigation map: `NAVIGATION_GUIDE.md`
 - Industry pattern mapping: `INDUSTRY_AGENT_DETAILS.md`
 - Public learn-along hub: `docs/index.md`
 - LinkedIn series + tracker + Colab guide: `docs/linkedin/`

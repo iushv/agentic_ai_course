@@ -1,11 +1,12 @@
 # SOTA Agentic AI Learn-Along
 
 This is the public learner hub for running the notebooks, following the 14-day plan, and sharing progress.
+All paths below are repository-root relative.
 
 ## Start in 3 Steps
 
 1. Follow the execution path:
-   - `LEARNING_PATH_14_DAYS.md`
+   - `NAVIGATION_GUIDE.md`
 2. Track daily work:
    - `LEARNING_DAILY_TEMPLATE.md`
 3. Run notebooks in Colab with setup code:
