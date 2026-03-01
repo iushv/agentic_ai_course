@@ -55,6 +55,20 @@ def _is_local_openai_base_url(base_url: str | None) -> bool:
     return (parsed.hostname or "").lower() in LOCAL_OPENAI_HOSTS
 
 
+def _supports_pre_request_token_count(model_name: str) -> bool:
+    """Whether UsageLimits pre-request token counting is supported for this model.
+
+    Local OpenAI-compatible backends (LM Studio/Ollama OpenAI API, etc.) may not
+    expose tokenization endpoints required by `count_tokens_before_request`.
+    """
+    if not model_name.startswith("openai:"):
+        return True
+    openai_base_url = os.getenv("OPENAI_BASE_URL")
+    if _is_local_openai_base_url(openai_base_url):
+        return False
+    return True
+
+
 def _bootstrap_lmstudio_openai_env() -> None:
     """Configure OpenAI-compatible env vars for local LM Studio usage."""
     raw_base_url = os.getenv("LMSTUDIO_BASE_URL", "").strip()
@@ -336,7 +350,7 @@ class DataAnalystAgent:
                 request_limit=self.max_iterations,
                 tool_calls_limit=self.max_iterations * 4,
                 total_tokens_limit=token_limit,
-                count_tokens_before_request=True,
+                count_tokens_before_request=_supports_pre_request_token_count(model_name),
             )
 
             try:

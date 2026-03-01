@@ -74,10 +74,12 @@ Checklist:
 - Read `src/analyst/agent.py`.
 - Output:
   - Explain iteration/tool budget controls.
+  - Show one `Critique + Verify` pass (verifier checks + critic verdict + revised/final answer).
 
 Checklist:
 - [ ] Notebook ran
 - [ ] Loop limits explained
+- [ ] Critique/verifier pass captured
 
 ### Day 6 (Fri, Feb 27)
 
